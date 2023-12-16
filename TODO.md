@@ -1,6 +1,29 @@
-# TODO
-
-## High Priority:
+## TODO:
 - [x] Setup CMake build system
 - [x] Setup external dependencies
 - [ ] OpenGL boilerplate
+    - [x] Open window
+    - [x] Clear screen
+    - [ ] Render triangles
+    - [ ] Load textures
+    - [ ] 3D camera
+- [ ] Render cube
+- [ ] Chunking
+- [ ] Remove hidden faces
+- [ ] Add/remove blocks
+- [ ] World generation
+    - [ ] Perlin noise
+    - [ ] Simple terrain
+    - [ ] Biomes
+    - [ ] Water
+    - [ ] Structures
+- [ ] Transparency
+- [ ] Lighting
+    - [ ] Light propogation
+    - [ ] Sun lighting
+- [ ] Post-processing
+    - [ ] Ambient occlusion
+    - [ ] Shadow mapping
+    - [ ] Gamma correction
+    - [ ] HDR
+    - [ ] Bloom
