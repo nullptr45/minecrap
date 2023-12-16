@@ -2,5 +2,5 @@
 
 ## High Priority:
 - [x] Setup CMake build system
-- [ ] Setup external dependencies
+- [x] Setup external dependencies
 - [ ] OpenGL boilerplate
