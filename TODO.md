@@ -4,7 +4,7 @@
 - [ ] OpenGL boilerplate
     - [x] Open window
     - [x] Clear screen
-    - [ ] Render triangles
+    - [x] Render triangles
     - [ ] Load textures
     - [ ] 3D camera
 - [ ] Render cube
