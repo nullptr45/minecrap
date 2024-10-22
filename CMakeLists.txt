@@ -15,3 +15,4 @@ endif()
 
 file(GLOB_RECURSE MC_SRCS src/*.cpp src/*.h)
 add_executable(minecrap ${MC_SRCS})
+target_precompile_headers(minecrap PRIVATE src/pch.h)
