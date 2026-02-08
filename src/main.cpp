@@ -9,6 +9,11 @@
 #include <cstdint>
 #include <iostream>
 
+// imgui
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <imgui.h>
+
 static constexpr int         WINDOW_WIDTH = 1280;
 static constexpr int         WINDOW_HEIGHT = 720;
 static constexpr const char* WINDOW_TITLE = "Minecrap";
@@ -32,9 +37,9 @@ int main()
         return -1;
     }
 
-    SDL_Window* window =
-        SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                         WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
+    SDL_Window* window = SDL_CreateWindow(
+        WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
     if (!window) {
         std::cerr << "Failed to open window" << std::endl;
@@ -51,6 +56,7 @@ int main()
         std::cerr << "Failed to create OpenGL context" << std::endl;
         return -1;
     }
+    SDL_GL_SetSwapInterval(1);
 
     if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
         std::cerr << "Failed to load OpenGL extensions" << std::endl;
@@ -91,6 +97,19 @@ int main()
         glm::perspective(glm::radians(65.f), (float) WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.f);
     shader.set_uniform("proj", proj);
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_ctx);
+    ImGui_ImplOpenGL3_Init("#version 330 core");
+
     bool     is_running = true;
     uint64_t curr_time = SDL_GetPerformanceCounter();
     while (is_running) {
@@ -100,16 +119,33 @@ int main()
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
+            ImGui_ImplSDL2_ProcessEvent(&event);
             switch (event.type) {
             case SDL_QUIT:
                 is_running = false;
+                break;
+            case SDL_WINDOWEVENT:
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    glViewport(0, 0, event.window.data1, event.window.data2);
+                    proj = glm::perspective(glm::radians(65.f),
+                                            (float) WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.f);
+                    shader.set_uniform("proj", proj);
+                }
                 break;
             default:
                 break;
             }
         }
 
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ImGui::Begin("Stats");
+        ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
+        ImGui::End();
 
         static glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, glm::pi<float>() * dt, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -124,8 +160,20 @@ int main()
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
+
         SDL_GL_SwapWindow(window);
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
 
     return 0;
 }
