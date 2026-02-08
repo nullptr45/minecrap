@@ -1,4 +1,5 @@
 #include "shader.h"
+#include "texture.h"
 
 #include <SDL.h>
 #include <glad/glad.h>
@@ -11,10 +12,10 @@ static constexpr int         WINDOW_HEIGHT = 720;
 static constexpr const char* WINDOW_TITLE = "Minecrap";
 
 static constexpr float vertices[] = {
-    0.5f,  0.5f,  1.f, // Top right
-    -0.5f, 0.5f,  1.f, // Top left
-    -0.5f, -0.5f, 1.f, // Bottom left
-    0.5f,  -0.5f, 1.f  // Bottom right
+    0.5f,  0.5f,  0.f, 1.f, 1.f, // Top right
+    -0.5f, 0.5f,  0.f, 0.f, 1.f, // Top left
+    -0.5f, -0.5f, 0.f, 0.f, 0.f, // Bottom left
+    0.5f,  -0.5f, 0.f, 1.f, 0.f  // Bottom right
 };
 
 static constexpr uint32_t indices[] = {
@@ -60,7 +61,8 @@ int main()
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glClearColor(0.33, 0.81, 0.92, 1.0);
 
-    Shader shader("assets/shaders/world.vert.glsl", "assets/shaders/world.frag.glsl");
+    Shader  shader("assets/shaders/world.vert.glsl", "assets/shaders/world.frag.glsl");
+    Texture texture("assets/textures/grass.jpg");
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -75,8 +77,11 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, nullptr);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
+                          reinterpret_cast<void*>(sizeof(float) * 3));
+    glEnableVertexAttribArray(1);
 
     bool is_running = true;
     while (is_running) {
@@ -94,6 +99,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.bind();
+        texture.bind();
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
