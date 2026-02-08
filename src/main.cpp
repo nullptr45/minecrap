@@ -3,6 +3,8 @@
 
 #include <SDL.h>
 #include <glad/glad.h>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 #include <cstdint>
 #include <iostream>
@@ -59,9 +61,11 @@ int main()
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0.33, 0.81, 0.92, 1.0);
 
-    Shader  shader("assets/shaders/world.vert.glsl", "assets/shaders/world.frag.glsl");
+    Shader shader("assets/shaders/world.vert.glsl", "assets/shaders/world.frag.glsl");
+    shader.bind();
     Texture texture("assets/textures/grass.jpg");
 
     GLuint vao;
@@ -83,8 +87,17 @@ int main()
                           reinterpret_cast<void*>(sizeof(float) * 3));
     glEnableVertexAttribArray(1);
 
-    bool is_running = true;
+    glm::mat4 proj =
+        glm::perspective(glm::radians(65.f), (float) WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.f);
+    shader.set_uniform("proj", proj);
+
+    bool     is_running = true;
+    uint64_t curr_time = SDL_GetPerformanceCounter();
     while (is_running) {
+        uint64_t prev_time = curr_time;
+        curr_time = SDL_GetPerformanceCounter();
+        float dt = (float) ((curr_time - prev_time) / (float) SDL_GetPerformanceFrequency());
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -97,6 +110,14 @@ int main()
         }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        static glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::pi<float>() * dt, glm::vec3(1.0f, 0.0f, 0.0f));
+        shader.set_uniform("model", model);
+
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        shader.set_uniform("view", view);
 
         shader.bind();
         texture.bind();
