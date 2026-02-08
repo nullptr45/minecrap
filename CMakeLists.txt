@@ -11,6 +11,8 @@ file(GLOB_RECURSE MC_SRCS CONFIGURE_DEPENDS src/*.cpp)
 target_sources(${PROJECT_NAME} PUBLIC ${MC_SRCS})
 
 add_subdirectory(thirdparty/glad)
+add_subdirectory(thirdparty/glm)
+add_subdirectory(thirdparty/stb)
 
 target_include_directories(minecrap PUBLIC src ${SDL2_INCLUDE_DIRS})
-target_link_libraries(minecrap ${SDL2_LIBRARIES} glad)
+target_link_libraries(minecrap ${SDL2_LIBRARIES} glad glm stb)
