@@ -10,5 +10,5 @@ public:
     void bind() const;
 
 private:
-    uint32_t id;
+    uint32_t id_;
 };

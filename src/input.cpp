@@ -19,6 +19,7 @@ namespace input {
 
 void init()
 {
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_memset(keys_curr, 0, sizeof(keys_curr));
     SDL_memset(keys_prev, 0, sizeof(keys_prev));
 }
@@ -95,6 +96,29 @@ const glm::ivec2& mouse_delta()
 int mouse_wheel()
 {
     return ::mouse_wheel;
+}
+
+glm::vec2 move_vec()
+{
+    glm::vec2 v{0.f};
+
+    if (key_down(SDL_SCANCODE_D)) v.x += 1.0f;
+    if (key_down(SDL_SCANCODE_A)) v.x -= 1.0f;
+    if (key_down(SDL_SCANCODE_W)) v.y += 1.0f;
+    if (key_down(SDL_SCANCODE_S)) v.y -= 1.0f;
+
+    float len = glm::length(v);
+    if (len > 1.0f) v /= len;
+
+    return v;
+}
+
+glm::vec2 look_vec()
+{
+    glm::vec2 v{0.f};
+    v.x += mouse_delta().x;
+    v.y -= mouse_delta().y;
+    return v;
 }
 
 } // namespace input

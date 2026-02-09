@@ -6,6 +6,8 @@
 
 namespace input {
 
+static constexpr float MOUSE_SENS = 0.1f;
+
 void init();
 
 void update();
@@ -22,5 +24,8 @@ bool mouse_released(uint8_t button);
 const glm::ivec2& mouse_pos();
 const glm::ivec2& mouse_delta();
 int mouse_wheel();
+
+glm::vec2 move_vec();
+glm::vec2 look_vec();
 
 } // namespace input

@@ -16,5 +16,5 @@ public:
     void set_uniform(const char* name, const glm::mat4& mat);
 
 private:
-    uint32_t id;
+    uint32_t id_;
 };

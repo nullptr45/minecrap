@@ -1,3 +1,4 @@
+#include "camera.h"
 #include "input.h"
 #include "shader.h"
 #include "texture.h"
@@ -18,6 +19,8 @@
 static constexpr int         WINDOW_WIDTH = 1280;
 static constexpr int         WINDOW_HEIGHT = 720;
 static constexpr const char* WINDOW_TITLE = "Minecrap";
+
+static constexpr float MOVE_SPEED = 20.f;
 
 static constexpr float vertices[] = {
     0.5f,  0.5f,  0.f, 1.f, 1.f, // Top right
@@ -46,8 +49,6 @@ int main()
         std::cerr << "Failed to open window" << std::endl;
         return -1;
     }
-
-    input::init();
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -96,9 +97,8 @@ int main()
                           reinterpret_cast<void*>(sizeof(float) * 3));
     glEnableVertexAttribArray(1);
 
-    glm::mat4 proj =
-        glm::perspective(glm::radians(65.f), (float) WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.f);
-    shader.set_uniform("proj", proj);
+    Camera    camera{};
+    glm::vec3 player_pos{0.f};
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -113,6 +113,7 @@ int main()
     ImGui_ImplSDL2_InitForOpenGL(window, gl_ctx);
     ImGui_ImplOpenGL3_Init("#version 330 core");
 
+    input::init();
     bool     is_running = true;
     uint64_t curr_time = SDL_GetPerformanceCounter();
     while (is_running) {
@@ -132,11 +133,22 @@ int main()
             } else if (event.type == SDL_WINDOWEVENT &&
                        event.window.event == SDL_WINDOWEVENT_RESIZED) {
                 glViewport(0, 0, event.window.data1, event.window.data2);
-                proj = glm::perspective(glm::radians(65.f), (float) WINDOW_WIDTH / WINDOW_HEIGHT,
-                                        0.1f, 100.f);
-                shader.set_uniform("proj", proj);
+                camera.set_aspect((float) event.window.data1 / event.window.data2);
             }
         }
+
+        if (input::key_pressed(SDL_SCANCODE_ESCAPE)) {
+            SDL_SetRelativeMouseMode(SDL_FALSE);
+        }
+
+        glm::vec2 look = input::look_vec();
+        camera.add_yaw(look.x);
+        camera.add_pitch(look.y);
+
+        glm::vec2 move = input::move_vec();
+        glm::vec3 offset = camera.right() * move.x + camera.forward() * move.y;
+        player_pos += offset * MOVE_SPEED * dt;
+        camera.set_position(player_pos);
 
         // Begin rendering
         ImGui_ImplOpenGL3_NewFrame();
@@ -149,13 +161,11 @@ int main()
         ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
         ImGui::End();
 
-        static glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::pi<float>() * dt, glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 model = glm::mat4(1.0f);
         shader.set_uniform("model", model);
 
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-        shader.set_uniform("view", view);
+        shader.set_uniform("view", camera.view());
+        shader.set_uniform("proj", camera.proj());
 
         shader.bind();
         texture.bind();

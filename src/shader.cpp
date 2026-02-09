@@ -11,17 +11,17 @@ static GLuint compile_shader(const char* path, GLenum type)
 {
     GLuint s = glCreateShader(type);
 
-    std::ifstream file{path};
+    std::ifstream     file{path};
     std::stringstream strm;
     strm << file.rdbuf();
     file.close();
     std::string contents = strm.str();
-    const char* src      = contents.c_str();
+    const char* src = contents.c_str();
 
     glShaderSource(s, 1, &src, nullptr);
     glCompileShader(s);
 
-    int success;
+    int  success;
     char buf[512];
     glGetShaderiv(s, GL_COMPILE_STATUS, &success);
     glGetShaderInfoLog(s, 512, nullptr, buf);
@@ -37,11 +37,11 @@ Shader::Shader(const char* vs_path, const char* fs_path)
 {
     GLuint vs = compile_shader(vs_path, GL_VERTEX_SHADER);
     GLuint fs = compile_shader(fs_path, GL_FRAGMENT_SHADER);
-    id        = glCreateProgram();
+    id_ = glCreateProgram();
 
-    glAttachShader(id, vs);
-    glAttachShader(id, fs);
-    glLinkProgram(id);
+    glAttachShader(id_, vs);
+    glAttachShader(id_, fs);
+    glLinkProgram(id_);
 
     glDeleteShader(vs);
     glDeleteShader(fs);
@@ -49,17 +49,17 @@ Shader::Shader(const char* vs_path, const char* fs_path)
 
 Shader::~Shader()
 {
-    glDeleteProgram(id);
+    glDeleteProgram(id_);
 }
 
 void Shader::bind() const
 {
-    glUseProgram(id);
+    glUseProgram(id_);
 }
 
 uint32_t Shader::uniform_loc(const char* name) const
 {
-    return glGetUniformLocation(id, name);
+    return glGetUniformLocation(id_, name);
 }
 
 void Shader::set_uniform(const char* name, const glm::mat4& mat)

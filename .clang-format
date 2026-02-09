@@ -38,9 +38,9 @@ BraceWrapping:
   SplitEmptyNamespace: false
 
 # Control statements
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
 
 # Spacing
 SpaceBeforeParens: ControlStatements
@@ -49,12 +49,11 @@ SpacesInParentheses: false
 SpacesInAngles: false
 SpacesInSquareBrackets: false
 
-# Alignments (ENGINE FRIENDLY)
 AlignAfterOpenBracket: Align
 AlignOperands: true
 AlignTrailingComments: true
 AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: true   # <-- this is the key change
+AlignConsecutiveDeclarations: true
 
 # Includes
 SortIncludes: true
