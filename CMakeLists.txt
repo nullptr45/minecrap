@@ -16,4 +16,4 @@ add_subdirectory(thirdparty/stb)
 add_subdirectory(thirdparty/imgui)
 
 target_include_directories(minecrap PUBLIC src ${SDL2_INCLUDE_DIRS})
-target_link_libraries(minecrap ${SDL2_LIBRARIES} glad glm stb imgui)
+target_link_libraries(minecrap ${SDL2_LIBRARIES} glm stb imgui)

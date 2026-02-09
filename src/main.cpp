@@ -1,3 +1,4 @@
+#include "input.h"
 #include "shader.h"
 #include "texture.h"
 
@@ -45,6 +46,8 @@ int main()
         std::cerr << "Failed to open window" << std::endl;
         return -1;
     }
+
+    input::init();
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -113,30 +116,29 @@ int main()
     bool     is_running = true;
     uint64_t curr_time = SDL_GetPerformanceCounter();
     while (is_running) {
+        // Delta time
         uint64_t prev_time = curr_time;
         curr_time = SDL_GetPerformanceCounter();
         float dt = (float) ((curr_time - prev_time) / (float) SDL_GetPerformanceFrequency());
 
+        // Event polling
+        input::update();
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             ImGui_ImplSDL2_ProcessEvent(&event);
-            switch (event.type) {
-            case SDL_QUIT:
+            input::event(event);
+            if (event.type == SDL_QUIT) {
                 is_running = false;
-                break;
-            case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    glViewport(0, 0, event.window.data1, event.window.data2);
-                    proj = glm::perspective(glm::radians(65.f),
-                                            (float) WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.f);
-                    shader.set_uniform("proj", proj);
-                }
-                break;
-            default:
-                break;
+            } else if (event.type == SDL_WINDOWEVENT &&
+                       event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                glViewport(0, 0, event.window.data1, event.window.data2);
+                proj = glm::perspective(glm::radians(65.f), (float) WINDOW_WIDTH / WINDOW_HEIGHT,
+                                        0.1f, 100.f);
+                shader.set_uniform("proj", proj);
             }
         }
 
+        // Begin rendering
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
@@ -168,6 +170,7 @@ int main()
             ImGui::RenderPlatformWindowsDefault();
         }
 
+        // Swap buffers
         SDL_GL_SwapWindow(window);
     }
 
