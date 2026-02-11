@@ -22,17 +22,54 @@ static constexpr const char* WINDOW_TITLE = "Minecrap";
 
 static constexpr float MOVE_SPEED = 20.f;
 
+// clang-format off
 static constexpr float vertices[] = {
-    0.5f,  0.5f,  0.f, 1.f, 1.f, // Top right
-    -0.5f, 0.5f,  0.f, 0.f, 1.f, // Top left
-    -0.5f, -0.5f, 0.f, 0.f, 0.f, // Bottom left
-    0.5f,  -0.5f, 0.f, 1.f, 0.f  // Bottom right
+    // Front
+     0.5f,  0.5f,  0.5f, 1.f, 1.f,
+    -0.5f,  0.5f,  0.5f, 0.f, 1.f,
+    -0.5f, -0.5f,  0.5f, 0.f, 0.f,
+     0.5f, -0.5f,  0.5f, 1.f, 0.f,
+
+    // Back
+    -0.5f,  0.5f, -0.5f, 1.f, 1.f,
+     0.5f,  0.5f, -0.5f, 0.f, 1.f,
+     0.5f, -0.5f, -0.5f, 0.f, 0.f,
+    -0.5f, -0.5f, -0.5f, 1.f, 0.f,
+
+    // Left
+    -0.5f,  0.5f,  0.5f, 1.f, 1.f,
+    -0.5f,  0.5f, -0.5f, 0.f, 1.f,
+    -0.5f, -0.5f, -0.5f, 0.f, 0.f,
+    -0.5f, -0.5f,  0.5f, 1.f, 0.f,
+
+    // Right
+     0.5f,  0.5f, -0.5f, 1.f, 1.f,
+     0.5f,  0.5f,  0.5f, 0.f, 1.f,
+     0.5f, -0.5f,  0.5f, 0.f, 0.f,
+     0.5f, -0.5f, -0.5f, 1.f, 0.f,
+
+    // Top
+     0.5f,  0.5f, -0.5f, 1.f, 1.f,
+    -0.5f,  0.5f, -0.5f, 0.f, 1.f,
+    -0.5f,  0.5f,  0.5f, 0.f, 0.f,
+     0.5f,  0.5f,  0.5f, 1.f, 0.f,
+
+    // Bottom
+     0.5f, -0.5f,  0.5f, 1.f, 1.f,
+    -0.5f, -0.5f,  0.5f, 0.f, 1.f,
+    -0.5f, -0.5f, -0.5f, 0.f, 0.f,
+     0.5f, -0.5f, -0.5f, 1.f, 0.f,
 };
 
 static constexpr uint32_t indices[] = {
-    0, 1, 2, // First
-    0, 2, 3  // Second
+    0,  1,  2,  0,  2,  3,  // Front
+    4,  5,  6,  4,  6,  7,  // Back
+    8,  9,  10, 8,  10, 11, // Left
+    12, 13, 14, 12, 14, 15, // Right
+    16, 17, 18, 16, 18, 19, // Top
+    20, 21, 22, 20, 22, 23  // Bottom
 };
+// clang-format on
 
 int main()
 {
@@ -170,7 +207,7 @@ int main()
         shader.bind();
         texture.bind();
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
