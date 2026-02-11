@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "chunk.h"
 #include "input.h"
 #include "shader.h"
 #include "texture.h"
@@ -21,55 +22,6 @@ static constexpr int         WINDOW_HEIGHT = 720;
 static constexpr const char* WINDOW_TITLE = "Minecrap";
 
 static constexpr float MOVE_SPEED = 20.f;
-
-// clang-format off
-static constexpr float vertices[] = {
-    // Front
-     0.5f,  0.5f,  0.5f, 1.f, 1.f,
-    -0.5f,  0.5f,  0.5f, 0.f, 1.f,
-    -0.5f, -0.5f,  0.5f, 0.f, 0.f,
-     0.5f, -0.5f,  0.5f, 1.f, 0.f,
-
-    // Back
-    -0.5f,  0.5f, -0.5f, 1.f, 1.f,
-     0.5f,  0.5f, -0.5f, 0.f, 1.f,
-     0.5f, -0.5f, -0.5f, 0.f, 0.f,
-    -0.5f, -0.5f, -0.5f, 1.f, 0.f,
-
-    // Left
-    -0.5f,  0.5f,  0.5f, 1.f, 1.f,
-    -0.5f,  0.5f, -0.5f, 0.f, 1.f,
-    -0.5f, -0.5f, -0.5f, 0.f, 0.f,
-    -0.5f, -0.5f,  0.5f, 1.f, 0.f,
-
-    // Right
-     0.5f,  0.5f, -0.5f, 1.f, 1.f,
-     0.5f,  0.5f,  0.5f, 0.f, 1.f,
-     0.5f, -0.5f,  0.5f, 0.f, 0.f,
-     0.5f, -0.5f, -0.5f, 1.f, 0.f,
-
-    // Top
-     0.5f,  0.5f, -0.5f, 1.f, 1.f,
-    -0.5f,  0.5f, -0.5f, 0.f, 1.f,
-    -0.5f,  0.5f,  0.5f, 0.f, 0.f,
-     0.5f,  0.5f,  0.5f, 1.f, 0.f,
-
-    // Bottom
-     0.5f, -0.5f,  0.5f, 1.f, 1.f,
-    -0.5f, -0.5f,  0.5f, 0.f, 1.f,
-    -0.5f, -0.5f, -0.5f, 0.f, 0.f,
-     0.5f, -0.5f, -0.5f, 1.f, 0.f,
-};
-
-static constexpr uint32_t indices[] = {
-    0,  1,  2,  0,  2,  3,  // Front
-    4,  5,  6,  4,  6,  7,  // Back
-    8,  9,  10, 8,  10, 11, // Left
-    12, 13, 14, 12, 14, 15, // Right
-    16, 17, 18, 16, 18, 19, // Top
-    20, 21, 22, 20, 22, 23  // Bottom
-};
-// clang-format on
 
 int main()
 {
@@ -109,33 +61,17 @@ int main()
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_CULL_FACE);
     glClearColor(0.33, 0.81, 0.92, 1.0);
 
     Shader shader("assets/shaders/world.vert.glsl", "assets/shaders/world.frag.glsl");
     shader.bind();
     Texture texture("assets/textures/grass.jpg");
 
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    GLuint vbo, ibo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, nullptr);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
-                          reinterpret_cast<void*>(sizeof(float) * 3));
-    glEnableVertexAttribArray(1);
-
     Camera    camera{};
     glm::vec3 player_pos{0.f};
+
+    Chunk chunk({0, 0, 0});
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -187,6 +123,8 @@ int main()
         player_pos += offset * MOVE_SPEED * dt;
         camera.set_position(player_pos);
 
+        chunk.update();
+
         // Begin rendering
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
@@ -206,8 +144,7 @@ int main()
 
         shader.bind();
         texture.bind();
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+        chunk.draw();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

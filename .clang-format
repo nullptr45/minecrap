@@ -54,6 +54,7 @@ AlignOperands: true
 AlignTrailingComments: true
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: true
+AlignArrayOfStructures: Left
 
 # Includes
 SortIncludes: true
