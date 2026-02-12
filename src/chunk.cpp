@@ -33,6 +33,8 @@ Chunk::Chunk(const glm::ivec3& pos) : pos_(pos)
             }
         }
     }
+
+    generate();
 }
 
 Chunk::~Chunk()
@@ -47,7 +49,7 @@ void Chunk::update()
     if (dirty_) generate();
 }
 
-void Chunk::draw() const
+void Chunk::render() const
 {
     glBindVertexArray(vao_);
     glDrawElements(GL_TRIANGLES, index_count_, GL_UNSIGNED_INT, nullptr);
@@ -85,9 +87,9 @@ void Chunk::generate()
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 if (blocks_[x][y][z] == Block::Air) continue;
 
-                float wx = (float) x;
-                float wy = (float) y;
-                float wz = (float) z;
+                float wx = (float) x + pos_.x * CHUNK_SIZE;
+                float wy = (float) y + pos_.y * CHUNK_SIZE;
+                float wz = (float) z + pos_.z * CHUNK_SIZE;
 
                 // Front
                 if (get_block(x, y, z - 1) == Block::Air) {
@@ -100,7 +102,7 @@ void Chunk::generate()
                     add_face(face);
                 }
 
-                // Back)
+                // Back
                 if (get_block(x, y, z + 1) == Block::Air) {
                     Vertex face[] = {
                         {{wx + 1, wy + 1, wz + 1}, {1, 1}},

@@ -3,6 +3,7 @@
 #include "input.h"
 #include "shader.h"
 #include "texture.h"
+#include "world.h"
 
 #include <SDL.h>
 #include <glad/glad.h>
@@ -71,7 +72,7 @@ int main()
     Camera    camera{};
     glm::vec3 player_pos{0.f};
 
-    Chunk chunk({0, 0, 0});
+    World world;
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -123,7 +124,7 @@ int main()
         player_pos += offset * MOVE_SPEED * dt;
         camera.set_position(player_pos);
 
-        chunk.update();
+        world.update(player_pos);
 
         // Begin rendering
         ImGui_ImplOpenGL3_NewFrame();
@@ -134,6 +135,8 @@ int main()
 
         ImGui::Begin("Stats");
         ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
+        // ImGui::Text("Chunk x: %d", world.player_chunk_.x);
+        // ImGui::Text("Chunk z: %d", world.player_chunk_.y);
         ImGui::End();
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -144,7 +147,7 @@ int main()
 
         shader.bind();
         texture.bind();
-        chunk.draw();
+        world.render();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

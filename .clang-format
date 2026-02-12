@@ -38,8 +38,8 @@ BraceWrapping:
   SplitEmptyNamespace: false
 
 # Control statements
-AllowShortIfStatementsOnASingleLine: true
-AllowShortLoopsOnASingleLine: true
+# AllowShortIfStatementsOnASingleLine: true
+# AllowShortLoopsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: Inline
 
 # Spacing

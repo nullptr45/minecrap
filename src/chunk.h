@@ -14,7 +14,7 @@ public:
     ~Chunk();
 
     void update();
-    void draw() const;
+    void render() const;
 
     Block get_block(int x, int y, int z) const;
 
