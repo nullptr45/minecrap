@@ -5,3 +5,9 @@
 	path = thirdparty/imgui/imgui
 	url = https://github.com/ocornut/imgui
 	branch = docking
+[submodule "thirdparty/nlohmann"]
+	path = thirdparty/nlohmann
+	url = https://github.com/nlohmann/json
+[submodule "thirdparty/tracy"]
+	path = thirdparty/tracy
+	url = https://github.com/wolfpld/tracy
