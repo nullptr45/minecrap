@@ -1,5 +1,4 @@
 #include "camera.h"
-#include "chunk.h"
 #include "input.h"
 #include "shader.h"
 #include "texture.h"
@@ -50,7 +49,7 @@ int main()
         std::cerr << "Failed to create OpenGL context" << std::endl;
         return -1;
     }
-    SDL_GL_SetSwapInterval(1);
+    // SDL_GL_SetSwapInterval(1);
 
     if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
         std::cerr << "Failed to load OpenGL extensions" << std::endl;
@@ -65,7 +64,7 @@ int main()
     // glEnable(GL_CULL_FACE);
     glClearColor(0.33, 0.81, 0.92, 1.0);
 
-    Shader shader("assets/shaders/world.vert.glsl", "assets/shaders/world.frag.glsl");
+    Shader shader("assets/shaders/chunk.vert.glsl", "assets/shaders/chunk.frag.glsl");
     shader.bind();
     Texture texture("assets/textures/grass.jpg");
 

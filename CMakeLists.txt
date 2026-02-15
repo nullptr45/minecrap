@@ -14,6 +14,7 @@ add_subdirectory(thirdparty/glad)
 add_subdirectory(thirdparty/glm)
 add_subdirectory(thirdparty/stb)
 add_subdirectory(thirdparty/imgui)
+add_subdirectory(thirdparty/nlohmann)
 
 target_include_directories(minecrap PUBLIC src ${SDL2_INCLUDE_DIRS})
-target_link_libraries(minecrap ${SDL2_LIBRARIES} glm stb imgui)
+target_link_libraries(minecrap ${SDL2_LIBRARIES} glm stb imgui nlohmann_json::nlohmann_json)

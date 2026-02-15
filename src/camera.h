@@ -29,8 +29,6 @@ public:
 
 private:
     void update_vectors();
-    void update_view();
-    void update_proj();
 
 private:
     glm::vec3 position_{0.f};

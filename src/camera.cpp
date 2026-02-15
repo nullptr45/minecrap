@@ -78,6 +78,7 @@ const glm::vec3& Camera::up()
     return up_;
 }
 
+
 const glm::mat4& Camera::view()
 {
     if (view_dirty_) {
@@ -89,14 +90,11 @@ const glm::mat4& Camera::view()
     return view_;
 }
 
-void Camera::update_proj()
-{
-    proj_ = glm::perspective(glm::radians(fov_), aspect_, near_, far_);
-    proj_dirty_ = false;
-}
-
 const glm::mat4& Camera::proj()
 {
-    if (proj_dirty_) update_proj();
+    if (proj_dirty_) {
+        proj_ = glm::perspective(glm::radians(fov_), aspect_, near_, far_);
+        proj_dirty_ = false;
+    }
     return proj_;
 }
