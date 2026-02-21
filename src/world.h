@@ -1,5 +1,6 @@
 #pragma once
 
+#include "blocks.h"
 #include "chunk.h"
 
 #include <glm/glm.hpp>
@@ -22,7 +23,7 @@ struct ChunkHash {
 
 class World {
 public:
-    World() = default;
+    World(const BlockRegistry& blocks);
 
     Chunk* get_chunk(const glm::ivec2& chunk_pos);
 
@@ -38,6 +39,7 @@ private:
 
 private:
     std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, ChunkHash> loaded_chunks_;
+    const BlockRegistry& blocks_;
 
     std::queue<glm::ivec2> gen_queue_;
 

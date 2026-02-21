@@ -2,8 +2,9 @@
 
 layout (location = 0) in vec3 a_pos;
 layout (location = 1) in vec2 a_uv;
+layout (location = 2) in uint a_id;
 
-out vec2 UV;
+out vec3 UV;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -11,6 +12,6 @@ uniform mat4 proj;
 
 void main()
 {
-    UV = a_uv;
+    UV = vec3(a_uv, a_id);
     gl_Position = proj * view * model * vec4(a_pos, 1.f);
 }

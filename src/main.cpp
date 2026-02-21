@@ -1,3 +1,4 @@
+#include "blocks.h"
 #include "camera.h"
 #include "input.h"
 #include "shader.h"
@@ -61,17 +62,20 @@ int main()
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glClearColor(0.33, 0.81, 0.92, 1.0);
 
     Shader shader("assets/shaders/chunk.vert.glsl", "assets/shaders/chunk.frag.glsl");
     shader.bind();
-    Texture texture("assets/textures/grass.jpg");
+
+    TextureArray textures(128, 128);
+
+    BlockRegistry blocks("assets/blocks.json", textures);
+
+    World world(blocks);
 
     Camera    camera{};
     glm::vec3 player_pos{0.f};
-
-    World world;
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -145,7 +149,7 @@ int main()
         shader.set_uniform("proj", camera.proj());
 
         shader.bind();
-        texture.bind();
+        textures.bind();
         world.render();
 
         ImGui::Render();

@@ -1,0 +1,41 @@
+{
+    "blocks": [
+        {
+            "name": "air",
+            "textures": {
+                "all": "none"
+            },
+            "transparent": true
+        },
+        {
+            "name": "grass",
+            "textures": {
+                "top": "blocks/grass_block_top.png",
+                "side": "blocks/grass_block_side.png",
+                "bottom": "blocks/dirt.png"
+            },
+            "transparent": false
+        },
+        {
+            "name": "dirt",
+            "textures": {
+                "all": "blocks/dirt.png"
+            },
+            "transparent": false
+        },
+        {
+            "name": "stone",
+            "textures": {
+                "all": "blocks/stone.png"
+            },
+            "transparent": false
+        },
+        {
+            "name": "sand",
+            "textures": {
+                "all": "blocks/sand.png"
+            },
+            "transparent": false
+        }
+    ]
+}

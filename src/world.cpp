@@ -1,9 +1,11 @@
 #include "world.h"
 
+World::World(const BlockRegistry& blocks) : blocks_(blocks) {}
+
 glm::ivec2 World::world_to_chunk(const glm::vec3& world_pos) const
 {
-    return {static_cast<int>(std::floor(world_pos.x / CHUNK_SIZE)),
-            static_cast<int>(std::floor(world_pos.z / CHUNK_SIZE))};
+    return {static_cast<int>(std::floor(world_pos.x / Chunk::SIZE)),
+            static_cast<int>(std::floor(world_pos.z / Chunk::SIZE))};
 }
 
 Chunk* World::get_chunk(const glm::ivec2& chunk_pos)
@@ -26,6 +28,9 @@ void World::update(const glm::vec3& player_pos)
 
     generate_chunks();
     unload_far_chunks();
+
+    for (const auto& [pos, chunk] : loaded_chunks_)
+        chunk->update(blocks_);
 }
 
 void World::rebuild_queue()

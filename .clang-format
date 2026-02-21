@@ -20,10 +20,10 @@ DerivePointerAlignment: false
 # Braces
 BreakBeforeBraces: Custom
 BraceWrapping:
-  # Functions → Allman
+  # Functions -> Allman
   AfterFunction: true
 
-  # Everything else → K&R
+  # Everything else -> K&R
   AfterClass: false
   AfterStruct: false
   AfterUnion: false
