@@ -1,9 +1,9 @@
-#include "blocks.h"
-#include "camera.h"
-#include "input.h"
-#include "shader.h"
-#include "texture.h"
-#include "world.h"
+#include "gfx/shader.h"
+#include "gfx/texture.h"
+#include "util/camera.h"
+#include "util/input.h"
+#include "world/blocks.h"
+#include "world/world.h"
 
 #include <SDL.h>
 #include <glad/glad.h>

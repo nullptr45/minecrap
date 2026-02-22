@@ -1,10 +1,9 @@
 #pragma once
 
-#include "texture.h"
+#include "gfx/texture.h"
 
 #include <cstdint>
 #include <string>
-#include <functional>
 #include <unordered_map>
 #include <vector>
 

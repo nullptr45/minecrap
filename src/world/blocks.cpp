@@ -16,7 +16,7 @@ BlockRegistry::BlockRegistry(std::string path, TextureArray& textures)
         BlockData block{};
         block.id = id;
 
-        std::string name = b["name"].get<std::string>();
+        std::string name = b["name"];
         block.name = name;
         block_ids_.insert_or_assign(std::string(name), id);
 
